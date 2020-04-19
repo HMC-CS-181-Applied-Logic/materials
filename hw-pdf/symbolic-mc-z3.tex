@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{url}
+
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or solution or whatever
+
+\setlength\parindent{0pt}
+
+\title{Symbolic Model Checking with Z3}
+\date{}
+\begin{document}
+\maketitle
+
+\vspace{-2cm}
+\begin{problem}{Symbolic Model Checking}Consider the transition system $\mathcal{M} = (S, R, I)$:
+
+\begin{itemize} 
+
+\item $S = \{0, 1, 2, 3\}$ is the set of states,
+
+\item $I = \{0\}$ is the set of initial states,
+
+\item $R \ = \{(0, 1), (0, 2), (1, 3), (2, 3), (3, 3)\}$
+defines the transition relation, 
+
+\item $AP = \{p\}$ is the set of atomic propositions, and 
+
+\item $L$ is the labeling function with 
+$L(0) = L(1) = L(2) = \emptyset$, and $L(3) = \{p\}$.
+
+\end{itemize}
+
+Let's  use two boolean variables $x$ and $y$ to encode the states of this transition system.
+
+\begin{multicols}{4}
+\begin{itemize}
+
+\item State 0: $\neg x \land \neg y$
+\item State 1: $x \land \neg y $
+\item State 2: $\neg x \land y $
+\item State 3: $x \land y$
+
+\end{itemize}
+\end{multicols}
+
+Complete the following tasks:
+
+\begin{enumerate}[label=\roman*.]
+
+\item  Draw the transition diagram for $\mathcal{M}$.
+
+\item  Write a Boolean logic formula that represents the set of initial states, $I$.
+
+\item  Write a Boolean logic formula for the set of states that correspond to property $p$.
+
+\item  Write a Boolean logic formula that represents the transition relation, $R$.
+
+\item Draw the BDD for the transition relation $R$. Use variable ordering $x, x', y, y'$.
+
+\item Compute $EX \ p$ using the boolean encoding described above by writing a python-Z3 program that encodes the logical definition of $EX \ p$. Take a look at the provided example code from the lecture for inspiration.
+
+\item What is the resulting expression returned by running Z3 on your query?
+
+\item The result of your query should be an expression that corresponds to the set of states satisfying $EX \ p$. Which states (i.e. state numbers) from the original transtion system does this expression encode? Does this match the answer you would get if you performed the explicit $EX$ algorithm for CTL model checking that we learned earlier in the semester? (Hint: it should!)
+
+
+\item \textbf{Bonus Exploration}. We showed how all of the other CTL operations can be expressed recursively using $EX$. For example $EG \ p \equiv p \land EX \ EG \ p$. In the slides, we showed (via example only) that repeatedly applying $EX$ and simplifying in the right way would converge to $EG \ \phi$ (or whatever other operator we were computing). Can you write a python function for $EG$, $EF$ and possibly other operators that just uses a function that computes $EX$?  
+
+
+\end{enumerate}
+
+\end{problem}
+
+
+
+
+\end{document}
