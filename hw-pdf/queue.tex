@@ -1,0 +1,178 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{multicol}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or solution or whatever
+
+\setlength\parindent{0pt}
+
+\title{Modelling a Queue}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{problem}{1. A model of a queue} 
+
+In this assignment, you will write $\nu$SMV code to model a queue and verify some properties of your model. We will model a queue that is implemented as a circular buffer using a head pointer and a tail pointer. \\
+
+A queue is a ``first in, first out'' (FIFO) data structure supporting \texttt{push} and \texttt{pop} operations. We can think of the queue as having a head and a tail. We \texttt{push} values onto the tail of the queue and \texttt{pop} values from the head of the queue. When either the head or the tail pointer reach the end of the buffer, they ``wrap around'' again to the beginning of the queue. \\
+
+First, download \texttt{queue-template.smv} from the course Piazza page (also included on the last page of this assignment). Implement a $\nu$SMV model of the queue as described here and in class. The provided template should run in $\nu$SMV and indicate that the example LTL property is false. This is because the functionality of the queue is not yet implemented by you. After implementing the queue model, this property, and some additional properties that you will define, should be true.\\
+
+Your model should be implemented inside \texttt{MODULE queue} only. \\
+
+
+The provided template defines the \texttt{MODULE main} which you should not change. The user has an \texttt{action} variable which can be either \texttt{push} or \texttt{pop} and variables \texttt{push\_val} and \texttt{pop\_val} to represent the data that is poshed or popped. Notice that in this model, we enforce in the \texttt{main MODULE} that the user never tries to \texttt{pop} when the queue is empty or \texttt{push} when the queue is full. Otherwise, the user non-deterministically chooses between \texttt{pop} or \texttt{push}. \\
+
+
+You will see that there are two preproccessor \texttt{define} directives---one for \texttt{SIZE} and one for \texttt{DATA}. This means you will need to run \texttt{NuSMV} with the \texttt{-pre cpp} flags. \texttt{DATA} is used to represent the possible data values that can be sored in the queue, specified as a range: \texttt{min..max}. For the time being, we will consider only two values, \texttt{1} and \texttt{2}. Note that in this assignment, we do not have a special \texttt{NULL} value as we did in the stack assignment. \\
+
+There are four variables in the \texttt{VAR} block: 
+\texttt{buff}, an array that will be used as the circular buffer to store data,
+\texttt{head}, which is an integer index to the head of the queue, initially 0,
+\texttt{tail}, which is an integer index to the tail of the queue, initially 0, and
+\texttt{empty}, which is a boolean value indicating if the queue is empty, initially true. Additionally, there is a variable \texttt{full} in the \texttt{DEFINE} block which will be used to keep track of whether the queue is full. In the template, \texttt{full} is set to \texttt{FALSE} so that the code will run without syntax errors. The \texttt{ASSIGN} block has nothing implemented. \\
+
+You job for this part of the assignment is to fill in the definition of \texttt{full} and to encode the initial states and transition relation for
+\texttt{head}, 
+\texttt{tail}, 
+\texttt{empty}, and 
+\texttt{buff} within the \texttt{ASSIGN} block. \\ 
+
+You should use the following guidelines when implementing your model:
+
+\begin{enumerate}[label=\roman*.]
+
+\item The Boolean value \texttt{full} can be defined as a logical equivalence to a formula involving \texttt{empty}, \texttt{head}, and \texttt{tail}.
+
+
+\item The value of \texttt{empty} should be initially true, should be false after any push action, and should become true in the next state any time that the action is pop and the tail pointer is ahead of the head pointer by one position (modulo the size of the buffer). 
+
+\item The \texttt{head} pointer, initially 0, should only move when the user chooses a pop action and the queue is not empty, in which case the head pointer is incremented by 1 (modulo the size of the buffer). 
+
+\item The \texttt{tail} pointer, initially 0, should only move when the action is push and the queue is not full, in which case the tail pointer should increment by 1 (modulo the size of the buffer). 
+
+\item The value of \texttt{pop\_val} should update to the current value stored in the buffer at the location of the \texttt{head} pointer.
+
+\item The buffer, \texttt{buff} should update whenever the action is push and the queue is not full, in which case the buffer value at the location pointed to by the tail pointer should update to the current value of \texttt{push\_val} 
+
+
+\end{enumerate}
+
+
+\end{problem}
+
+
+\begin{problem}{2. Verifying properties of your queue model} In this part of the assignment, you will write specifications for several queue properties and verify that the model you implemented in the previous part adheres to the specifications. Consequently, you may need to make changes to your model if it does not satisfy all of the desired properties. \\
+
+For each of the following properties, write a corresponding specification in your file and confirm that $\nu$SMV verifies the property. Some of them are similar to the stack properties you wrote previously, but take note that a stack is a LIFO data structure and a queue is a FIFO data structure.
+
+
+\begin{enumerate}[label=\roman*.]
+
+\item LTL property: It is always the case that if the queue is empty then the tail pointer is equal to the head pointer. (This one is done for you.)
+
+\item LTL property: The queue is never simultaneously full and empty.
+
+\item CTL property: In all possible states, it is always the case that if the queue happens to be full, then it is possible that the queue eventually becomes empty.
+
+\item LTL property: If the user never pops then the queue eventually fills up.
+
+\item CTL property: It is always the case that if $1$ is pushed on the queue and the queue is not full, then in all possible paths future paths there exists an execution path in which a 1 is popped.
+
+\item LTL property: It is always the case that that if a 1 is pushed onto the queue when the queue is not full, then  starting from the next state, the queue cannot be empty until the user has popped a 1.
+
+\item LTL property: If the user pushes a $1$ followed directly by a $2$, and the queue is not full during either of those push actions, then if the user immediately pops, the resulting value will be $1$ and if the user immediately pops again, the resulting value will be $2$. That is, items come out of the queue in FIFO order.
+
+\end{enumerate}
+
+\end{problem}
+
+
+\begin{problem}{3. Scalability of verification.} In this part of the assignment, you will explore the state-space explosion problem. \\
+
+\begin{enumerate}[label=\roman*.]
+
+\item After you have successfully verified the above properties, use \texttt{NuSMV} in interactive mode to determine the number of reachable states of the transition system.
+
+\item Use the Linux command \texttt{time} to measure the amount of \texttt{real} time needed to run \texttt{NuSMV} on your file.
+
+\begin{verbatim}
+  > time NuSMV -pre cpp queue.smv
+\end{verbatim}
+
+Note: before running the \texttt{time} command, you may want to run
+\begin{verbatim}
+  >  TIMEFMT=$'\nreal\t%E' 
+\end{verbatim}
+
+\item Now, observe that in the template, \texttt{DATA} is defined to be a set of only two values. Try changing the number of allowable data values to a larger number, say 10. Again, use
+\texttt{NuSMV} to compute the number of reachable states and also measure the amount of time is takes \texttt{NuSMV} to run.
+
+\item For each possible number of data values from 1 to 20, create either a table, or a plot of the number of possible data values vs the number of reachable states. (If you make a plot, you might want to make it logarithmically scaled on the y-axis.)
+
+\item For each possible number of data values from 1 to 20, create either a table, or a plot of the number of possible data values (on the x-axis) vs the running time of \texttt{NuSMV}. (If you make a plot, you might want to make logarithmically scaled on the y-axis.)
+
+
+
+\end{enumerate}
+
+\end{problem}
+
+\newpage 
+% \begin{multicols}{2}
+\begin{verbatim}
+#define SIZE 5
+#define DATA 1..2
+
+MODULE queue(action, push_val, pop_val)
+  VAR
+    buff  : array 0 .. (SIZE - 1) of DATA;
+    head  : 0 .. SIZE - 1;
+    tail  : 0 .. SIZE - 1;
+    empty : boolean;
+  DEFINE
+    -- specify a logical equivalence that defines full
+    -- in terms of empty, head, and tail.
+    -- That is, replace FALSE with an appropriate expression
+    full := FALSE;
+  ASSIGN
+    -- initially head and tail should be 0 
+    -- initially the queue should be empty
+    -- initially the buffer could be anything
+    -- specify the next state for head
+    -- specify the next state for tail
+    -- specify the next state for empty
+    -- specify the next state for pop_val
+    -- specify the next state for buff[i] for i from 0 to SIZE - 1
+
+MODULE main
+  -- do not change code in the main module 
+  VAR
+    action    : {push, pop};
+    pop_val   : DATA;
+    push_val  : DATA;
+    Q         : queue(action, push_val, pop_val);
+  ASSIGN
+    init(action) := push;
+    next(action) :=
+      case
+        Q.empty : push;
+        Q.full  : pop;
+        TRUE    : {push, pop};
+      esac;
+
+-- It is always the case that if the queue is empty then 
+-- the tail pointer is equal to the head pointer
+LTLSPEC G (Q.empty -> (Q.tail = Q.head))
+
+\end{verbatim}
+
+
+
+\end{document}
