@@ -1,0 +1,70 @@
+\documentclass[12pt]{article}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{url}
+
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or solution or whatever
+
+\setlength\parindent{0pt}
+
+\title{Symbolic Execution}
+\date{}
+\begin{document}
+\maketitle
+
+
+\begin{problem}{2. Symbolic Execution} Consider the code shown here.
+
+\begin{verbatim}
+0.  foo(int x, int y){
+1.   if( x > y){
+2.     x = x + y;
+3.     y = x - y;
+4.     x = x - y;
+5.   }
+6.   if(x > y){
+7.     assert(false);
+8.   }
+9. }
+\end{verbatim}
+
+Complete the following:
+
+
+\begin{enumerate}[label=\roman*.]
+
+\item For these four function calls, what are the values of \texttt{x} and \texttt{y} when the concrete execution has exited the if-block at line 5 and is about to execute line 6?
+
+\begin{multicols}{2}
+\begin{enumerate}[label=\alph*.]
+
+\item \texttt{foo(10,20)}
+\item \texttt{foo(42,42)}
+\item \texttt{foo(20, 10)}
+\item \texttt{foo(16,15)}
+
+\end{enumerate}
+\end{multicols}
+
+\item Describe in words what this program does.
+
+\item Let \texttt{X} and \texttt{Y} be symbolic values representing \texttt{x} and \texttt{y}. Draw the symbolic execution tree that results from symbolically executing \texttt{foo(X,Y)}.
+
+
+\item According to your symbolic execution tree, is it possible for there to be an assertion violation? If yes, provide concrete values of \texttt{x} and \texttt{y} that would cause the error.(Assume that we think of \texttt{x} and \texttt{y} as infinite precision integers. I.e. there is no integer overflow.)
+
+\end{enumerate}
+
+
+\end{problem}
+
+
+
+\end{document}
