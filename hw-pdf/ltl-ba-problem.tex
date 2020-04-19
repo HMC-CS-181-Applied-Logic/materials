@@ -1,0 +1,65 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{wasysym}
+\usepackage{url}
+
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or solution or whatever
+
+\setlength\parindent{0pt}
+
+\title{LTL Model Checking}
+\date{}
+\begin{document}
+\maketitle
+
+ 
+\begin{problem}{2} Consider the following transition system, $\mathcal{M} = (S, \rightarrow, L)$, where 
+
+\begin{itemize} 
+
+\item $S = \{0, 1\}$ is the set of states,
+
+\item $I = \{0\}$ is the set of initial states,
+
+\item $\rightarrow \ = \{(0, 0), (0, 1), (1, 0)\}$
+defines the transition relation, 
+
+\item $AP = \{p, q\}$ is the set of atomic propositions, and 
+
+\item $L : S \rightarrow 2^{AP}$ is the labeling function where 
+$L(0) = \{p, q\}$ and 
+$L(1) = \{p\}$.
+
+\end{itemize}
+
+Check the property \textit{always, if $p$ holds, then in the next state $q$ holds}, which can be written in LTL as a formula $\phi$, where $\phi = G ( p \rightarrow X \ q)$, by performing the following:
+
+
+\begin{enumerate}[label=\alph*.]
+\item Convert $\neg \phi$ to a transition system using the online tool located at
+
+\url{http://www.lsv.fr/~gastin/ltl2ba/index.php}
+
+\item Draw the transition system for $\neg \phi$ as a B\"uchi Automaton $A_{\neg \phi}$ as described in class, where transitions are labeled with subsets of the atomic propositions $AP$.
+
+\item  Draw the transition diagram for $\mathcal{M}$.
+
+\item Convert the transition diagram $\mathcal{M}$ into a B\"uchi Automaton $A_{\mathcal{M}}$ by adding the extra initial state and putting the labels, as subsets of $AP$, on the appropriate transitions.
+
+\item Construct the product automaton $A_{\mathcal{M}} \times A_{\neg \phi}$.
+
+\item Determine if there is an infinite path in the product automaton that visits an accepting state infinitely often. If so, give an example of this path, and in addition, give a path in the original transition system $\mathcal{M}$ that corresponds to this counter example. If there is no such accepting path in the product automaton, simply state this fact. 
+\end{enumerate}
+
+
+\end{problem}
+
+
+\end{document}
