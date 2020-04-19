@@ -1,0 +1,328 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx} 
+\usepackage{enumitem}
+\usepackage{multicol}
+% \setlist{nosep}
+% \pagenumbering{gobble}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or solution or whatever
+
+\setlength\parindent{0pt}
+
+\title{Some problems for CS181u}
+\date{}
+\begin{document}
+\maketitle
+
+
+
+\begin{problem}{Symbolic Execution} Consider the code shown here.
+
+\begin{verbatim}
+0.  foo(int x, int y){
+1.   if(x > y){
+2.     z = x - y;
+3.   } else {
+4.	    z = y - x;
+5.   }
+6.   if(z < 0){
+7.     assert(false);
+8.   }
+9. }
+\end{verbatim}
+
+Complete the following:
+
+
+\begin{enumerate}[label=\roman*.]
+
+% \item For these three function calls, what are the values of \texttt{x} and \texttt{y} when the concrete execution has exited the if-block at line 5 and is about to execute line 6?
+
+% \begin{multicols}{3}
+% \begin{enumerate}[label=\alph*.]
+
+% \item \texttt{foo(1,2)}
+% \item \texttt{foo(4,4)}
+% \item \texttt{foo(2, 1)}
+
+% \end{enumerate}
+% \end{multicols} 
+
+
+% \vspace{1.5cm}
+
+% \item Describe in words what this program does. 
+
+% \vspace{2.0cm}
+
+
+\item Let \texttt{X}, \texttt{Y}, and \texttt{Z} be symbolic values representing \texttt{x}, \texttt{y}, and \texttt{z}. Draw the symbolic execution tree that results from symbolically executing \texttt{foo(X,Y)}.
+
+\vspace{6.0cm}
+
+
+\item According to your symbolic execution tree, is it possible for there to be an assertion violation? If yes, provide concrete values of \texttt{x} and \texttt{y} that would cause the error.(Assume that we think of \texttt{x} and \texttt{y} as infinite precision integers. I.e. there is no integer overflow.)
+
+\end{enumerate}
+
+
+\end{problem}
+
+\newpage
+
+\begin{problem}{Symbolic Model Checking} Consider the transition system $\mathcal{M} = (S, R, I)$:
+
+\begin{itemize} 
+
+\item $S = \{0, 1\}$ is the set of states,
+
+\item $I = \{0\}$ is the set of initial states,
+
+\item $R \ = \{(0, 1), (1, 0)\}$
+defines the transition relation, 
+
+\item $AP = \{p\}$ is the set of atomic propositions, and 
+
+\item $L$ is the labeling function with 
+$L(0) = \emptyset$, and $L(1) = \{p\}$.
+
+
+\end{itemize}
+
+Let's use a single boolean variable $x$ to encode the states of this transition system.
+
+\begin{multicols}{2}
+\begin{itemize}
+
+\item State 0: $\neg x $
+\item State 1: $\ \ x$
+
+\end{itemize}
+\end{multicols}
+
+Complete the following:
+
+\begin{enumerate}[label=\roman*.]
+
+\item  Draw the transition diagram for $\mathcal{M}$.
+
+\vspace{3cm}
+% \item  Write a Boolean logic formula that represents the set of initial states, $I$.
+
+\item  Write a Boolean logic formula for the set of states that correspond to property $p$.
+
+\vspace{1.5cm}
+
+\item  Write a Boolean logic formula that represents the transition relation $R$ using the variable $x$ and a new variable $x'$ which represents the ``next state''.
+
+\vspace{1.5cm}
+
+
+\item Draw the reduced ordered binary decision diagram (ROBDD) for the transition relation $R$. Use variable ordering $x, x'$.
+
+\newpage
+
+\item Recall that for a property $\phi$ and symbolic transition relation $R$, we can compute $EX \ \phi$ using the equivalence
+
+$$EX \ \phi \ \equiv \ \exists V' \ : \ R \land \phi[V' / V]$$
+
+where $V'$ is the set of ``next state'' variables and $\phi[V' / V]$ indicates replacing variables $V$ with $V'$ in $\phi$. \\
+
+Write an expression for $EX \ p$ involving existential quantification, variables $x$ and $x'$, and the expressions for $p$ (from problem ii.) and $R$ (from problem iii.), by applying the logical equivalence given above.
+
+
+\vspace{3cm}
+
+
+\item Recall that for a formula $f$ and variable $v'$, we can get rid of $v'$ in the expression $\exists v' : f$ using the 
+
+$$\exists v : f \ \equiv \ f[F / v'] \lor f[T / v']$$
+
+Compute $EX \ p$ using your expression from problem (v.) by applying the equivalence and simplifying.
+
+\vspace{6cm}
+
+
+
+\item The result of problem (vi.) should be a Boolean formula with a single variable $x$ that corresponds to the set of states satisfying $EX \ p$. Which states (i.e. state numbers) from the original transition system does this expression encode? 
+
+
+\vspace{1.5cm}
+
+\item Does $\mathcal{M} \models EX \ p $ \ ? (yes or no)
+
+
+\end{enumerate}
+
+\end{problem}
+
+
+\newpage
+
+
+
+
+\begin{problem}{Temporal Logic for Transition Systems} The following problems cover transition systems, CTL, and LTL. \\ \\
+
+Which of the specifications in plain English below convey the mathematical meaning of the CTL formula $AG \ (p \rightarrow (q \ AU \ r))$ ? Circle a single correct answer.
+
+
+\begin{enumerate}[label=\alph*.]
+
+\item Any reachable state in which p is true has a path from it on which r is eventually true, and until then q is true.
+
+\item If p is true in every reachable state, then there is a path along which q holds, until r becomes true.
+
+\item If p holds in every reachable state, then for any path along which q holds continuously, r becomes true.
+
+\item For any reachable state in which p is true, then, on any path from that state, q holds until r becomes true, and r is guaranteed to become true eventually.
+
+\item If p is true in every reachable state, then on every path there is a state at which r is true, and q is true until then.
+
+\end{enumerate}
+
+\end{problem}
+
+\newpage
+
+
+
+\begin{problem}{CTL Model Checking (20 points)} Consider the transition system, $\mathcal{M}$, shown here, with atomic propositions $AP = \{p, q, r\}$. Use the CTL model checking algorithm to determine if $\mathcal{M} \models \phi$, where $\phi = \neg EG \ ( p \ EU \ \neg q )$. Show your work by numbering your steps as you label nodes of the diagram. The transition system is given twice in case you would like to illustrate your steps in two separate phases.\\ \\ \\ \\
+
+\begin{figure}[!h]
+\centering
+\includegraphics[scale = 1.7]{ctl.pdf}
+\end{figure} 
+
+\newpage
+~ \\ \\ \\ \\ \\ \\
+\begin{figure}[!h]
+\centering
+\includegraphics[scale = 1.7]{ctl.pdf}
+\end{figure}
+
+\end{problem}
+
+\newpage
+
+
+\begin{problem}{B\"uchi Automata for LTL Formulas (25 points)} Recall that any LTL formula can be associated with a B\"uchi Automaton. Assuming that set of atomic propositions $AP$ is $\{p, q \}$, label each of the given B\"uchi Automata with its corresponding LTL formula from the provided list. Each formula should correspond to exactly one automaton. 
+
+
+\begin{multicols}{3}
+\begin{enumerate}[label=\alph*.]
+
+\item $ F \ p $
+
+\item $ G \ q $
+
+\item $ G \ (p \land q) $
+
+\item $ F \ (p \lor q) $
+
+\item $ p \ U \ q $
+
+\item $ G \ F \ (p \land q) $
+
+
+% \item $AG \ p$ \ \ \rule{1.4cm}{0.15mm}
+% \item $EG \ p$ \ \ \rule{1.4cm}{0.15mm}
+% \item $AF \ p$ \ \ \rule{1.4cm}{0.15mm}
+% \item $EF \ p$ \ \ \rule{1.4cm}{0.15mm}
+
+\end{enumerate}
+\end{multicols}
+
+\includegraphics[scale = 1.17]{ba-1.pdf}
+
+
+\end{problem}
+
+
+\newpage
+
+\newpage
+
+\begin{problem}{CTL Properties. 16 points total (1 point each)} For each transition system, determine if each of the four computation tree logic (CTL) properties hold (yes / no).
+
+\begin{enumerate}[label=\Alph*.]
+
+\item  
+
+\hspace{4cm}\includegraphics[scale = 0.8]{exam-m1.pdf}
+
+\begin{multicols}{4}
+\begin{enumerate}[label=\roman*.]
+
+\item $AG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $AF \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EF \ p$ \ \ \rule{1.4cm}{0.15mm}
+
+\end{enumerate}
+\end{multicols}
+
+
+~\\
+
+\item 
+
+\hspace{4cm}\includegraphics[scale = 0.8]{exam-m2.pdf}
+
+\begin{multicols}{4}
+\begin{enumerate}[label=\roman*.]
+
+\item $AG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $AF \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EF \ p$ \ \ \rule{1.4cm}{0.15mm}
+
+\end{enumerate}
+\end{multicols}
+
+
+~\\
+
+\item 
+
+\hspace{4cm}\includegraphics[scale = 0.8]{exam-m3.pdf}
+
+\begin{multicols}{4}
+\begin{enumerate}[label=\roman*.]
+
+\item $AG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $AF \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EF \ p$ \ \ \rule{1.4cm}{0.15mm}
+
+\end{enumerate}
+\end{multicols} 
+
+~\\
+
+\item  
+
+\hspace{4cm}\includegraphics[scale = 0.8]{exam-m4.pdf}
+
+\begin{multicols}{4}
+\begin{enumerate}[label=\roman*.]
+
+\item $AG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EG \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $AF \ p$ \ \ \rule{1.4cm}{0.15mm}
+\item $EF \ p$ \ \ \rule{1.4cm}{0.15mm}
+
+\end{enumerate}
+\end{multicols}
+
+\end{enumerate}
+
+\end{problem}
+
+
+
+\end{document}
